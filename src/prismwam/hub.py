@@ -11,9 +11,10 @@ Each repository holds one folder per release::
     THUSI-Lab/PrismWAM-Star (PrismWAM*)
     └── robotwin/           model folder
 
-A folder downloads to ``<local_dir>/<name>``. PrismWAM folders are named as on the
-Hub, so ``weights/init/...`` is exactly where the training recipes look; PrismWAM*
-folders are named ``prismwam_star/<folder>``, e.g. ``weights/prismwam_star/robotwin``.
+Each repository has its own local directory and a folder downloads to
+``<local_dir>/<folder>``: PrismWAM folders to ``weights/``, so ``weights/init/...``
+is exactly where the training recipes look, and PrismWAM* folders, named
+``prismwam_star/<folder>`` here, to ``weights_star/``, e.g. ``weights_star/robotwin``.
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ HF_REPO_ID = "THUSI-Lab/PrismWAM"
 HF_URL = f"https://huggingface.co/{HF_REPO_ID}"
 STAR_REPO_ID = "THUSI-Lab/PrismWAM-Star"
 STAR_PREFIX = "prismwam_star/"
+STAR_LOCAL_DIR = "weights_star"
 POLICIES = ("robotwin", "robodojo", "libero", STAR_PREFIX + "robotwin")
 TEXT_ENCODER_FILES = (
     "models_t5_umt5-xxl-enc-bf16.pth",
@@ -35,22 +37,28 @@ TEXT_ENCODER_FILES = (
 )
 
 
+def _release(name: str) -> tuple[str, str, str]:
+    """The repository, folder and default local directory of a release name."""
+    name = name.strip("/")
+    if name.startswith(STAR_PREFIX):
+        return STAR_REPO_ID, name[len(STAR_PREFIX) :], STAR_LOCAL_DIR
+    return HF_REPO_ID, name, "weights"
+
+
 def download(
     name: str,
-    local_dir: str | Path = "weights",
+    local_dir: str | Path | None = None,
     *,
-    repo_id: str = HF_REPO_ID,
+    repo_id: str | None = None,
     revision: str | None = None,
 ) -> Path:
-    """Download one release folder, e.g. ``"robotwin"``, ``"init"`` or
-    ``"prismwam_star/robotwin"``."""
+    """Download one release folder, e.g. ``"robotwin"`` or ``"init"`` (to ``weights/``),
+    or ``"prismwam_star/robotwin"`` (to ``weights_star/``)."""
     from huggingface_hub import snapshot_download
 
-    name = name.strip("/")
-    root, folder = Path(local_dir), name
-    if name.startswith(STAR_PREFIX):
-        repo_id, folder = STAR_REPO_ID, name[len(STAR_PREFIX) :]
-        root = root / STAR_PREFIX.rstrip("/")
+    default_repo, folder, default_dir = _release(name)
+    repo_id = repo_id or default_repo
+    root = Path(local_dir or default_dir)
     snapshot_download(
         repo_id=repo_id,
         revision=revision,
@@ -103,13 +111,16 @@ def is_bundle(path: str | Path) -> bool:
     return (path / "config.yaml").is_file() and (path / "policy.pt").is_file()
 
 
-def resolve_bundle(name_or_path: str | Path, local_dir: str | Path = "weights") -> Path:
+def resolve_bundle(
+    name_or_path: str | Path, local_dir: str | Path | None = None
+) -> Path:
     """Return a local model folder, downloading a released model by name if needed."""
     path = Path(name_or_path).expanduser()
     if is_bundle(path):
         return path
     if str(name_or_path) in POLICIES:
-        local = Path(local_dir) / str(name_or_path)
+        _, folder, default_dir = _release(str(name_or_path))
+        local = Path(local_dir or default_dir) / folder
         return local if is_bundle(local) else download(str(name_or_path), local_dir)
     raise FileNotFoundError(
         f"{name_or_path!r} is neither a PrismWAM model folder nor one of {POLICIES}."
@@ -127,12 +138,13 @@ def load_pretrained(
     *,
     device: str = "cuda:0",
     dtype=None,
-    local_dir: str | Path = "weights",
+    local_dir: str | Path | None = None,
 ):
     """Load a released model by name (``"robotwin"``) or from a local model folder.
 
     >>> from prismwam import load_pretrained
     >>> policy = load_pretrained("robotwin")          # downloads to weights/robotwin
+    >>> policy = load_pretrained("prismwam_star/robotwin")   # weights_star/robotwin
     >>> out = policy.predict(observation, seed=0)    # out["action"]: [32, 14]
     """
     import torch

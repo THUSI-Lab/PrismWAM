@@ -9,6 +9,7 @@ dist/
 reports/
 outputs/
 weights/
+weights_star/
 checkpoints/
 data/
 exports/

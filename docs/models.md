@@ -26,14 +26,14 @@ robotwin/
 
 ```bash
 hf download THUSI-Lab/PrismWAM --include "robotwin/*" --local-dir weights   # -> weights/robotwin/
-hf download THUSI-Lab/PrismWAM-Star --include "robotwin/*" --local-dir weights/prismwam_star   # -> weights/prismwam_star/robotwin/
+hf download THUSI-Lab/PrismWAM-Star --include "robotwin/*" --local-dir weights_star   # -> weights_star/robotwin/
 ```
 
 ```python
 from prismwam import load_pretrained
 
 policy = load_pretrained("robotwin")          # uses weights/robotwin, downloading it if missing
-policy = load_pretrained("prismwam_star/robotwin")   # PrismWAM*, weights/prismwam_star/robotwin
+policy = load_pretrained("prismwam_star/robotwin")   # PrismWAM*, weights_star/robotwin
 policy = load_pretrained("/path/to/model")    # any exported model folder
 ```
 

@@ -7,12 +7,12 @@ Clean → Randomized: train on the 50 tasks in clean scenes, evaluate in clean a
 | | Hugging Face | Local path |
 | --- | --- | --- |
 | PrismWAM | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robotwin) | `weights/robotwin/` |
-| PrismWAM\* | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) in PrismWAM-Star | `weights/prismwam_star/robotwin/` |
+| PrismWAM\* | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) in PrismWAM-Star | `weights_star/robotwin/` |
 | Training initializers (shared) | [`init/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/init) | `weights/init/` |
 
 ```bash
 hf download THUSI-Lab/PrismWAM --include "robotwin/*" --local-dir weights        # evaluation
-hf download THUSI-Lab/PrismWAM-Star --include "robotwin/*" --local-dir weights/prismwam_star   # evaluation, PrismWAM*
+hf download THUSI-Lab/PrismWAM-Star --include "robotwin/*" --local-dir weights_star   # evaluation, PrismWAM*
 hf download THUSI-Lab/PrismWAM --include "init/*" --local-dir weights   # training
 ```
 
@@ -87,7 +87,7 @@ PrismWAM\* runs through the same adapter and recipe, with its own model folder. 
 ```bash
 cd /path/to/RoboTwin/XPolicyLab/policy/PrismWAM
 export PRISMWAM_ROOT=/path/to/PrismWAM PRISMWAM_RECIPE=robotwin
-EVAL_ENV_TYPE=sim bash eval.sh RoboTwin <task> "$PRISMWAM_ROOT/weights/prismwam_star/robotwin" \
+EVAL_ENV_TYPE=sim bash eval.sh RoboTwin <task> "$PRISMWAM_ROOT/weights_star/robotwin" \
   aloha_agilex joint 0 0 0 /path/to/envs/prismwam <robotwin_env>
 ```
 
@@ -97,7 +97,7 @@ All 50 tasks, once per setting:
 cd /path/to/RoboTwin
 for setting in demo_clean demo_randomized; do
   bash scripts/eval_policy.sh multitask --config env_cfg/eval/all_tasks.yml \
-    --policy-name PrismWAM --ckpt-name "$PRISMWAM_ROOT/weights/prismwam_star/robotwin" \
+    --policy-name PrismWAM --ckpt-name "$PRISMWAM_ROOT/weights_star/robotwin" \
     --env-cfg-type aloha_agilex --policy-conda-env /path/to/envs/prismwam \
     --eval-env-conda-env <robotwin_env> --task-config "$setting" \
     --test-num 100 --instruction-type unseen --seed 0
