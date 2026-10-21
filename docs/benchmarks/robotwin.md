@@ -10,13 +10,23 @@ Clean → Randomized: train on the 50 tasks in clean scenes, evaluate in clean a
 | PrismWAM\* | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) in PrismWAM-Star | `weights/prismwam_star/robotwin/` |
 | Training initializers (shared) | [`init/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/init) | `weights/init/` |
 
+PrismWAM, for evaluation:
+
 ```bash
-hf download THUSI-Lab/PrismWAM --include "robotwin/*" --local-dir weights        # evaluation
-hf download THUSI-Lab/PrismWAM-Star --include "robotwin/*" --local-dir weights/prismwam_star   # evaluation, PrismWAM*
-hf download THUSI-Lab/PrismWAM --include "init/*" --local-dir weights   # training
+hf download THUSI-Lab/PrismWAM --include "robotwin/*" --local-dir weights
 ```
 
-Training also needs the [pretrained video model](../models.md#training-assets).
+PrismWAM\*, for evaluation:
+
+```bash
+hf download THUSI-Lab/PrismWAM-Star --include "robotwin/*" --local-dir weights/prismwam_star
+```
+
+Training initializers; training also needs the [pretrained video model](../models.md#training-assets):
+
+```bash
+hf download THUSI-Lab/PrismWAM --include "init/*" --local-dir weights
+```
 
 ## Data
 
