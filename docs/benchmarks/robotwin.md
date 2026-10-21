@@ -64,14 +64,14 @@ for setting in demo_clean demo_randomized; do
     --policy-name PrismWAM --ckpt-name "$PRISMWAM_ROOT/weights/robotwin" \
     --env-cfg-type aloha_agilex --policy-conda-env /path/to/envs/prismwam \
     --eval-env-conda-env <robotwin_env> --task-config "$setting" \
-    --test-num 20 --instruction-type unseen --seed 0
+    --test-num 100 --instruction-type unseen --seed 0
 done
 ```
 
 | Setting | Value |
 | --- | --- |
 | Scenes | `demo_clean` and `demo_randomized`, 50 tasks each |
-| Episodes per task and setting | PrismWAM: 20 (1,000 per setting); PrismWAM\*: 100 (5,000 per setting) |
+| Episodes per task and setting | 100 (5,000 per setting) |
 | Score | mean success of the two settings |
 | Instructions | unseen templates (training uses seen ones) |
 | Seeds | scene seeds from 100000, policy noise seed 0 |
@@ -82,8 +82,7 @@ revision; the current evaluator draws them per scene, so scores can differ sligh
 
 ### PrismWAM\*
 
-PrismWAM\* runs through the same adapter and recipe, with its own model folder and 100 episodes
-per task. One task:
+PrismWAM\* runs through the same adapter and recipe, with its own model folder. One task:
 
 ```bash
 cd /path/to/RoboTwin/XPolicyLab/policy/PrismWAM
