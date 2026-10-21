@@ -10,7 +10,7 @@ PrismWAM\* has its own repository with the same layout, **[THUSI-Lab/PrismWAM-St
 | PrismWAM | RoboTwin 2.0, Clean → Randomized | 14-D absolute joints, dual arm | 70.57 | [`robotwin`](../configs/robotwin) | [🤗 `robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robotwin) |
 | PrismWAM | RoboDojo | 14-D absolute joints, dual arm | 25.10 / 18.55 | [`robodojo`](../configs/robodojo) | [🤗 `robodojo/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robodojo) |
 | PrismWAM | LIBERO | 7-D delta end effector + gripper | 99.35 | [`libero`](../configs/libero) | [🤗 `libero/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/libero) |
-| PrismWAM\* | RoboTwin 2.0, Clean → Randomized | 14-D absolute joints, dual arm | 83.67 | evaluation only | [🤗 PrismWAM-Star `robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) |
+| PrismWAM\* | RoboTwin 2.0, Clean → Randomized | 14-D absolute joints, dual arm | 83.67 | — | [🤗 PrismWAM-Star `robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) |
 
 Each folder holds one model:
 

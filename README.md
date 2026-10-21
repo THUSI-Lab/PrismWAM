@@ -86,7 +86,7 @@ See the [observation and action format](docs/deployment.md#observations-and-acti
 | PrismWAM | RoboTwin 2.0 | 50 tasks, clean scenes | [`robotwin`](configs/robotwin) | [🤗 robotwin](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robotwin) |
 | PrismWAM | RoboDojo | 35 tasks, ARX X5 | [`robodojo`](configs/robodojo) | [🤗 robodojo](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robodojo) |
 | PrismWAM | LIBERO | 4 suites, 40 tasks | [`libero`](configs/libero) | [🤗 libero](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/libero) |
-| PrismWAM\* | RoboTwin 2.0 | 50 tasks, clean scenes | evaluation only | [🤗 PrismWAM-Star robotwin](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) |
+| PrismWAM\* | RoboTwin 2.0 | 50 tasks, clean scenes | — | [🤗 PrismWAM-Star robotwin](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) |
 
 See the [model guide](docs/models.md) for downloads and model layout.
 Training initializers are available in [`init/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/init).
