@@ -56,6 +56,7 @@ DATA_ROOT=/data/prismwam WEIGHTS_ROOT=/models/prismwam OUTPUT_ROOT=/runs \
 | `WEIGHTS_ROOT` | `./weights` | pretrained video model and `init/`, see [models](models.md) |
 | `OUTPUT_ROOT` | `./outputs` | `<benchmark>/<stage>/` checkpoints, logs, resolved config |
 | `ROBODOJO_ROOT` | `./external/RoboDojo` | RoboDojo checkout for RGB decoding (RoboDojo only) |
+| `ROBOTWIN_ROOT` | `./external/RoboTwin` | RoboTwin checkout with `XPolicyLab/`, for RGB decoding (RoboTwin Stage 2 only) |
 
 Extra arguments are passed through:
 

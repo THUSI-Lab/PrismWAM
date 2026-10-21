@@ -16,9 +16,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 DATA_ROOT="${DATA_ROOT:-./data}"           # parent of robotwin/, see docs/benchmarks/robotwin.md
 WEIGHTS_ROOT="${WEIGHTS_ROOT:-./weights}"  # see docs/models.md
 OUTPUT_ROOT="${OUTPUT_ROOT:-./outputs}"    # Stage 1 output is read from here
+ROBOTWIN_ROOT="${ROBOTWIN_ROOT:-./external/RoboTwin}"  # RoboTwin checkout with XPolicyLab/, needed to decode its RGB
 
 exec bash scripts/train.sh configs/robotwin/stage2_joint.yaml \
     paths.data_root="$DATA_ROOT" \
     paths.weights_root="$WEIGHTS_ROOT" \
     paths.output_root="$OUTPUT_ROOT" \
+    paths.robotwin_root="$ROBOTWIN_ROOT" \
     "$@"

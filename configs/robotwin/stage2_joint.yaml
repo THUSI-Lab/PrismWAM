@@ -15,6 +15,7 @@ data:
   train: &train
     _target_: prismwam.datasets.robotwin_rgb_depth_action_dataset.RobotWinRGBDepthActionVideoDataset
     root_dir: ${paths.data_root}/robotwin
+    xpolicylab_parent: ${paths.robotwin_root}
     phases: [demo_clean]
     task_names: null
     exclude_task_names: []

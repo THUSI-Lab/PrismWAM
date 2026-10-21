@@ -20,7 +20,7 @@ Training also needs the [pretrained video model](../models.md#training-assets).
 
 ## Data
 
-Collect `demo_clean` episodes with depth (`data_type.depth: true`) for all 50 tasks, plus `demo_clean_val`, under `data/robotwin/<task>/<phase>/`, and copy RoboTwin's instruction templates and object descriptions ([layout](../data.md#expected-layout)). Then build `data/robotwin/action_stats.pt` and `data/robotwin/text_cache/` ([data preparation](../data.md)).
+Collect `demo_clean` episodes with depth (`data_type.depth: true`) for all 50 tasks, plus `demo_clean_val`, under `data/robotwin/<task>/<phase>/`, and copy RoboTwin's instruction templates and object descriptions ([layout](../data.md#expected-layout)). Stage 2 decodes RGB with XPolicyLab's helper: keep the RoboTwin checkout that contains `XPolicyLab/` under `external/RoboTwin` (or set `ROBOTWIN_ROOT`). Then build `data/robotwin/action_stats.pt` and `data/robotwin/text_cache/` ([data preparation](../data.md)).
 
 ## Train
 

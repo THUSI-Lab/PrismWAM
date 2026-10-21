@@ -11,10 +11,8 @@ import os
 import hashlib
 import json
 import re
-import sys
-from functools import lru_cache
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 import h5py
 import numpy as np
 import torch
@@ -49,23 +47,6 @@ def _decode_instruction(value: Any) -> str:
     return text
 
 
-@lru_cache(maxsize=4)
-def _xpolicylab_decoder(parent: str) -> Callable[[Any], np.ndarray]:
-    """Load RoboDojo's canonical decoder without copying its format logic."""
-    package_parent = Path(parent).expanduser().resolve()
-    process_data = package_parent / "XPolicyLab" / "utils" / "process_data.py"
-    if not process_data.is_file():
-        raise FileNotFoundError(
-            f"RoboDojo RGB decoding requires XPolicyLab's shared helper; missing {process_data}."
-        )
-    parent_text = str(package_parent)
-    if parent_text not in sys.path:
-        sys.path.insert(0, parent_text)
-    from XPolicyLab.utils.process_data import decode_image_bit
-
-    return decode_image_bit
-
-
 class RoboDojoRGBDepthActionVideoDataset(RobotWinRGBDepthActionVideoDataset):
     """RGB/depth/action samples from RoboDojo simulation's dual-ARX5 trajectories.
 
@@ -98,10 +79,9 @@ class RoboDojoRGBDepthActionVideoDataset(RobotWinRGBDepthActionVideoDataset):
             if episode_index_path is None
             else Path(episode_index_path).expanduser()
         )
-        self.xpolicylab_parent = str(Path(xpolicylab_parent).expanduser())
         self.validate_index_files = bool(validate_index_files)
         self.manifest_fingerprint: str | None = None
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, xpolicylab_parent=xpolicylab_parent, **kwargs)
         if self.episode_split == "val":
             counts = Counter((e["task"] for e in self.episodes))
             if len(counts) != self.split_metadata["expected_tasks"] or set(
@@ -316,15 +296,6 @@ class RoboDojoRGBDepthActionVideoDataset(RobotWinRGBDepthActionVideoDataset):
             instruction = _decode_instruction(episode.get("instruction", ""))
             episode["instruction_candidates"] = (instruction,)
 
-    def _decode_robodojo_rgb(self, encoded: Any) -> np.ndarray:
-        decoded = _xpolicylab_decoder(self.xpolicylab_parent)(encoded)
-        array = np.asarray(decoded, dtype=np.uint8)
-        if array.ndim != 3 or array.shape[-1] != 3:
-            raise ValueError(
-                f"XPolicyLab decode_image_bit must return HWC RGB, got {array.shape}."
-            )
-        return array
-
     def _read_depth_window(
         self, h5_file: h5py.File, camera: str, start: int, length: int
     ) -> torch.Tensor:
@@ -353,7 +324,7 @@ class RoboDojoRGBDepthActionVideoDataset(RobotWinRGBDepthActionVideoDataset):
         self, h5_file: h5py.File, camera: str, indices: list[int]
     ) -> torch.Tensor:
         dataset = h5_file[self._rgb_key(camera)]
-        frames = [self._decode_robodojo_rgb(dataset[index]) for index in indices]
+        frames = [self._decode_rgb_frame(dataset[index]) for index in indices]
         video = np.stack(frames, axis=0).astype(np.float32) / 127.5 - 1.0
         return torch.from_numpy(video).permute(0, 3, 1, 2).contiguous()
 

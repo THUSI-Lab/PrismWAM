@@ -30,7 +30,9 @@ File names come from `configs/<benchmark>/*.yaml`; change them there if your lay
 
 - **RoboTwin 2.0**: `demo_clean` episodes for the 50 tasks, collected with depth enabled
   (`data_type.depth: true` in the task config), plus a `demo_clean_val` set (10 episodes per
-  task are used for validation).
+  task are used for validation). Stage 2 decodes RGB with XPolicyLab's helper from a RoboTwin
+  checkout (`ROBOTWIN_ROOT`, default `./external/RoboTwin`, the directory containing
+  `XPolicyLab/utils/process_data.py`).
 - **RoboDojo**: RGB decoding uses XPolicyLab's helper from a RoboDojo checkout
   (`ROBODOJO_ROOT`, default `./external/RoboDojo`, the directory containing
   `XPolicyLab/utils/process_data.py`).

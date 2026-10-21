@@ -1,28 +1,25 @@
 import bisect
 import hashlib
-from io import BytesIO
+import os
 import re
 from pathlib import Path
 from typing import Sequence
 import h5py
 import numpy as np
-from PIL import Image
 import torch
 import torch.nn.functional as F
 from .robotwin_instructions import RobotWinRawInstructionMixin
+from .xpolicylab_images import decode_rgb_frame
 
 PROMPT_TEMPLATE = "A video recorded from a robot's point of view executing the following instruction: {task}"
+# RoboTwin checkout that contains XPolicyLab/, whose helper decodes the RGB frames.
+DEFAULT_ROBOTWIN_ROOT = os.environ.get("PRISMWAM_ROBOTWIN_ROOT", "external/RoboTwin")
 
 
 def _natural_key(path: Path):
     return [
         int(part) if part.isdigit() else part for part in re.split("(\\d+)", path.name)
     ]
-
-
-def decode_hdf5_rgb_frame(encoded) -> np.ndarray:
-    image = Image.open(BytesIO(bytes(encoded))).convert("RGB")
-    return np.asarray(image, dtype=np.uint8)[..., ::-1]
 
 
 class RobotWinRGBVideoDataset(RobotWinRawInstructionMixin, torch.utils.data.Dataset):
@@ -54,7 +51,9 @@ class RobotWinRGBVideoDataset(RobotWinRawInstructionMixin, torch.utils.data.Data
         max_instructions_per_episode: int | None = None,
         dataset_uid: str | None = None,
         prompt_policy_id: str = "raw_robotwin_prompt",
+        xpolicylab_parent: str = DEFAULT_ROBOTWIN_ROOT,
     ):
+        self.xpolicylab_parent = str(Path(xpolicylab_parent).expanduser())
         self.root_dir = Path(root_dir).expanduser()
         self.phases = tuple(phases)
         self.cameras = tuple(cameras)
@@ -189,9 +188,8 @@ class RobotWinRGBVideoDataset(RobotWinRawInstructionMixin, torch.utils.data.Data
         start = int(local_idx * self.sample_stride)
         return (episode, start)
 
-    @staticmethod
-    def _decode_rgb_frame(encoded) -> np.ndarray:
-        return decode_hdf5_rgb_frame(encoded)
+    def _decode_rgb_frame(self, encoded) -> np.ndarray:
+        return decode_rgb_frame(encoded, self.xpolicylab_parent)
 
     def _read_rgb_window(
         self, h5_file: h5py.File, camera: str, start: int, length: int

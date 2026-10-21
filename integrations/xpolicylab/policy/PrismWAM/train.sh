@@ -51,4 +51,5 @@ if is_dry_run; then dry_run=(--dry-run); fi
 # Stage outputs go to outputs/<run>/<recipe>/<stage>, so Stage 2 finds Stage 1.
 exec bash "$PRISMWAM_ROOT/scripts/train.sh" "${resolved[0]}" "${dry_run[@]}" \
     "seed=$seed" "paths.output_root=${resolved[1]}" \
-    "paths.robodojo_root=${PRISMWAM_ROBODOJO_ROOT:-$BENCH_ROOT}" "$@"
+    "paths.robodojo_root=${PRISMWAM_ROBODOJO_ROOT:-$BENCH_ROOT}" \
+    "paths.robotwin_root=${PRISMWAM_ROBOTWIN_ROOT:-$BENCH_ROOT}" "$@"

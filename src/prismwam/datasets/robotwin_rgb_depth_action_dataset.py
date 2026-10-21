@@ -7,6 +7,7 @@ context. This adapter adds the RGB clip for the same anchor: either the full
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import h5py
@@ -16,7 +17,8 @@ import torch
 from prismwam.rgb_history import RGBHistory
 
 from .robotwin_depth_joint_dataset import RobotWinDepthJointVideoDataset
-from .robotwin_rgb_dataset import RobotWinRGBVideoDataset, decode_hdf5_rgb_frame
+from .robotwin_rgb_dataset import DEFAULT_ROBOTWIN_ROOT, RobotWinRGBVideoDataset
+from .xpolicylab_images import decode_rgb_frame
 
 
 RGB_TARGET_F8 = "f8"
@@ -31,8 +33,10 @@ class RobotWinRGBDepthActionVideoDataset(RobotWinDepthJointVideoDataset):
         rgb_target_mode: str = RGB_TARGET_F8,
         rgb_history_num_frames: int = 1,
         rgb_history_frame_stride: int = 4,
+        xpolicylab_parent: str = DEFAULT_ROBOTWIN_ROOT,
         **kwargs,
     ) -> None:
+        self.xpolicylab_parent = str(Path(xpolicylab_parent).expanduser())
         self.rgb_target_mode = str(rgb_target_mode).strip().lower()
         if self.rgb_target_mode != RGB_TARGET_F8:
             raise ValueError(
@@ -55,9 +59,8 @@ class RobotWinRGBDepthActionVideoDataset(RobotWinDepthJointVideoDataset):
         )
         super().__init__(*args, **kwargs)
 
-    @staticmethod
-    def _decode_rgb_frame(encoded) -> np.ndarray:
-        return decode_hdf5_rgb_frame(encoded)
+    def _decode_rgb_frame(self, encoded) -> np.ndarray:
+        return decode_rgb_frame(encoded, self.xpolicylab_parent)
 
     def _read_rgb_video(self, episode: dict[str, Any], start: int) -> torch.Tensor:
         length = int(episode["length"])
@@ -96,10 +99,7 @@ class RobotWinRGBDepthActionVideoDataset(RobotWinDepthJointVideoDataset):
             camera_videos = []
             for camera in self.cameras:
                 rgb_ds = h5_file[f"observation/{camera}/rgb"]
-                frames = [
-                    RobotWinRGBVideoDataset._decode_rgb_frame(rgb_ds[index])
-                    for index in indices
-                ]
+                frames = [self._decode_rgb_frame(rgb_ds[index]) for index in indices]
                 video = np.stack(frames, axis=0).astype(np.float32) / 127.5 - 1.0
                 camera_videos.append(
                     torch.from_numpy(video).permute(0, 3, 1, 2).contiguous()

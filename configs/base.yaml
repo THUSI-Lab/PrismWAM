@@ -6,6 +6,7 @@ paths:                                  # set by scripts/<benchmark>/*.sh
   weights_root: ./weights               # see docs/models.md
   output_root: ./outputs
   robodojo_root: ./external/RoboDojo    # RoboDojo checkout, needed to decode its RGB
+  robotwin_root: ./external/RoboTwin    # RoboTwin checkout with XPolicyLab/, needed to decode its RGB
 
 # Optimisation. Gradient accumulation = global_batch_size / (batch_size x GPUs), set at launch.
 learning_rate: 1.0e-4
