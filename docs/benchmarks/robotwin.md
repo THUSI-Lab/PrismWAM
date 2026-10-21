@@ -7,7 +7,7 @@ Clean → Randomized: train on the 50 tasks in clean scenes, evaluate in clean a
 | | Hugging Face | Local path |
 | --- | --- | --- |
 | PrismWAM | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robotwin) | `weights/robotwin/` |
-| PrismWAM\* (evaluation only) | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) in PrismWAM-Star | `weights/prismwam_star/robotwin/` |
+| PrismWAM\* | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) in PrismWAM-Star | `weights/prismwam_star/robotwin/` |
 | Training initializers (shared) | [`init/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/init) | `weights/init/` |
 
 ```bash
@@ -82,8 +82,8 @@ revision; the current evaluator draws them per scene, so scores can differ sligh
 
 ### PrismWAM\*
 
-PrismWAM\* is released for evaluation only. It runs through the same adapter and recipe, with its
-own model folder and 100 episodes per task. One task:
+PrismWAM\* runs through the same adapter and recipe, with its own model folder and 100 episodes
+per task. One task:
 
 ```bash
 cd /path/to/RoboTwin/XPolicyLab/policy/PrismWAM
