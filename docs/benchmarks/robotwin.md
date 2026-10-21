@@ -6,8 +6,8 @@ Clean → Randomized: train on the 50 tasks in clean scenes, evaluate in clean a
 
 | | Hugging Face | Local path |
 | --- | --- | --- |
-| Model | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robotwin) | `weights/robotwin/` |
-| PrismWAM\* (evaluation only) | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) of THUSI-Lab/PrismWAM-Star | `weights/prismwam_star/robotwin/` |
+| PrismWAM | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/robotwin) | `weights/robotwin/` |
+| PrismWAM\* (evaluation only) | [`robotwin/`](https://huggingface.co/THUSI-Lab/PrismWAM-Star/tree/main/robotwin) in PrismWAM-Star | `weights/prismwam_star/robotwin/` |
 | Training initializers (shared) | [`init/`](https://huggingface.co/THUSI-Lab/PrismWAM/tree/main/init) | `weights/init/` |
 
 ```bash
@@ -71,16 +71,43 @@ done
 | Setting | Value |
 | --- | --- |
 | Scenes | `demo_clean` and `demo_randomized`, 50 tasks each |
-| Episodes | 20 per task per setting (1,000 per setting; PrismWAM\*: 100 per task); score = mean success of the two settings |
+| Episodes per task and setting | PrismWAM: 20 (1,000 per setting); PrismWAM\*: 100 (5,000 per setting) |
+| Score | mean success of the two settings |
 | Instructions | unseen templates (training uses seen ones) |
 | Seeds | scene seeds from 100000, policy noise seed 0 |
 | Inference | 32-step chunk, execute 24, 10 denoising steps, no conditioning noise |
 
-PrismWAM\* runs the same way with `"$PRISMWAM_ROOT/weights/prismwam_star/robotwin"` as the model and
-`--test-num 100`. It is released for evaluation only.
-
 The reported results drew instructions with a fixed seed (42) in an earlier RoboTwin
 revision; the current evaluator draws them per scene, so scores can differ slightly.
+
+### PrismWAM\*
+
+PrismWAM\* is released for evaluation only. It runs through the same adapter and recipe, with its
+own model folder and 100 episodes per task. One task:
+
+```bash
+cd /path/to/RoboTwin/XPolicyLab/policy/PrismWAM
+export PRISMWAM_ROOT=/path/to/PrismWAM PRISMWAM_RECIPE=robotwin
+EVAL_ENV_TYPE=sim bash eval.sh RoboTwin <task> "$PRISMWAM_ROOT/weights/prismwam_star/robotwin" \
+  aloha_agilex joint 0 0 0 /path/to/envs/prismwam <robotwin_env>
+```
+
+All 50 tasks, once per setting:
+
+```bash
+cd /path/to/RoboTwin
+for setting in demo_clean demo_randomized; do
+  bash scripts/eval_policy.sh multitask --config env_cfg/eval/all_tasks.yml \
+    --policy-name PrismWAM --ckpt-name "$PRISMWAM_ROOT/weights/prismwam_star/robotwin" \
+    --env-cfg-type aloha_agilex --policy-conda-env /path/to/envs/prismwam \
+    --eval-env-conda-env <robotwin_env> --task-config "$setting" \
+    --test-num 100 --instruction-type unseen --seed 0
+done
+```
+
+The policy and the simulator together use about 55 GB of GPU memory on one GPU. Besides the T5
+text encoder, the first load fetches the CLIP image encoder of Wan2.1-I2V-14B-480P (about 5 GB)
+to `weights/Wan-AI/Wan2.1-I2V-14B-480P` (or under `PRISMWAM_WEIGHTS_ROOT`).
 
 ## Results
 
