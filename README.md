@@ -14,8 +14,9 @@
 
 ## News
 
-- **2026-10-19** · PrismWAM ranks 🥇 **#1** on **RoboTwin 2.0 Clean → Randomized** and 🥈 **#2** on **RoboDojo**
-  (w/o Agent track), ahead of models pretrained on thousands of hours of robot actions.
+- **2026-10-23** · PrismWAM\* ranks 🥇 **#1** on the official [**RoboTwin 2.0 leaderboard**](https://robotwin-platform.github.io/leaderboard)
+  (**83.67** average, **75.50** clean → randomized) and 🥈 **#2** on **RoboDojo** (w/o Agent track),
+  ahead of models pretrained on thousands of hours of robot actions.
 - **2026-10-19** · Released code and training recipes, with **PrismWAM** checkpoints for RoboTwin 2.0, RoboDojo and LIBERO on [Hugging Face](https://huggingface.co/THUSI-Lab/PrismWAM).
 
 ## Overview
